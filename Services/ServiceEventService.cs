@@ -1,31 +1,56 @@
-﻿using BikeServiceAPI.Models.DTOs;
+﻿using BikeServiceAPI.Models;
+using BikeServiceAPI.Models.DTOs;
+using BikeServiceAPI.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace BikeServiceAPI.Services;
 
 public class ServiceEventService : IServiceEventService
 {
-    public Task<int> AddServiceEvent(ServiceEventDto serviceEventDto)
+    private readonly BikeServiceContext _context;
+
+    public ServiceEventService(BikeServiceContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
     }
 
-    public Task<ServiceEventDto> GetServiceEventById(long id)
+    public async Task<int> AddServiceEvent(ServiceEventDto serviceEventDto)
     {
-        throw new NotImplementedException();
+        var serviceEvent = new ServiceEvent(serviceEventDto);
+        _context.ServiceEvents.Add(serviceEvent);
+        return await _context.SaveChangesAsync();
     }
 
-    public Task<int> UpdateServiceEvent(ServiceEventDto serviceEventDto)
+    public async Task<ServiceEventDto> GetServiceEventById(long id)
     {
-        throw new NotImplementedException();
+        var serviceEvent = await GetServiceEventEntityById(id);
+        return new ServiceEventDto(serviceEvent);
     }
 
-    public Task<int> DeleteServiceEvent(long id)
+    public async Task<int> UpdateServiceEvent(ServiceEventDto serviceEventDto)
     {
-        throw new NotImplementedException();
+        var serviceEvent = await GetServiceEventEntityById(serviceEventDto.Id);
+        var updateServiceEvent = new ServiceEventDto(serviceEvent);
+        _context.Entry(serviceEvent).CurrentValues.SetValues(updateServiceEvent);
+        return await _context.SaveChangesAsync();
     }
 
-    public Task<List<ServiceEventDto>> GetAllServiceEvent()
+    public async Task<int> DeleteServiceEvent(long id)
     {
-        throw new NotImplementedException();
+        var serviceEvent = await GetServiceEventEntityById(id);
+        _context.Remove(serviceEvent);
+        return await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<ServiceEventDto>> GetAllServiceEvent()
+    {
+        var serviceEventList = await _context.ServiceEvents.ToListAsync();
+        return serviceEventList.Select(@event => new ServiceEventDto(@event)).ToList();
+    }
+
+    private async Task<ServiceEvent> GetServiceEventEntityById(long id)
+    {
+        return await _context.ServiceEvents.FirstOrDefaultAsync(service => service.Id == id) ??
+               throw new InvalidOperationException($"Service-event with {id} id not exist.");
     }
 }
