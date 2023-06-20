@@ -12,10 +12,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      
+      - name: Install ESLint
+      - run: npm install eslint 
 
       - name: Build and test app
         run: |
-          cd bike-service-web-app
           npm install
           npm run lint
 
