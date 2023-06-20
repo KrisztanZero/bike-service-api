@@ -1,0 +1,21 @@
+name: Dockerize
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build docker image
+        run: docker build -t krisztanzero/bike-service-project:bike-service-api .
+
+      - name: Push docker image
+        run: docker push krisztanzero/bike-service-project:bike-service-api
