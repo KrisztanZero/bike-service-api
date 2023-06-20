@@ -17,5 +17,10 @@ jobs:
       - name: Build docker image
         run: docker build -t krisztanzero/bike-service-project:bike-service-api .
 
-      - name: Push docker image
-        run: echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin && docker push krisztanzero/bike-service-project:bike-service-api
+      - name: Push Docker image
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN }}
+        run: |
+          echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
+          docker push krisztanzero/bike-service-project:bike-service-api
