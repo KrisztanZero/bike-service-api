@@ -1,11 +1,10 @@
 name: Dockerize
+
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
-  workflow_dispatch:
 
 jobs:
   build:
@@ -14,13 +13,43 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Build docker image
-        run: docker build -t krisztanzero/bike-service-project:bike-service-api .
-
-      - name: Push Docker image
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN }}
+      - name: Build and test app
         run: |
-          echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
-          docker push krisztanzero/bike-service-project:bike-service-api
+          npm install
+          npm run lint
+
+  push_to_dockerhub:
+    name: Push Images to Docker Hub
+    runs-on: ubuntu-latest
+    needs: [build]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/bike-service-project:bike-service-api
+
+      - name: Run the image in a container
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ${{ secrets.DOCKER_HUB_USERNAME }}/bike-service-project:bike-service-api
+          run: |
+            echo "Running the Docker image"
