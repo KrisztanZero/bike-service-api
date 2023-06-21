@@ -19,3 +19,5 @@ jobs:
 
       - name: Build and run NUnit tests
         run: dotnet test BikeServiceAPI.sln --logger "trx;LogFileName=test_results.trx"
+    outputs:
+      tests-status: ${{ job.status }}
