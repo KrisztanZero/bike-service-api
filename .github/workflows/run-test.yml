@@ -1,0 +1,21 @@
+name: Run NUnit tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Restore NuGet packages
+        run: nuget restore BikeServiceAPITest.sln
+
+      - name: Build and run NUnit tests
+        run: dotnet test BikeServiceAPITest.sln --logger "trx;LogFileName=test_results.trx"
