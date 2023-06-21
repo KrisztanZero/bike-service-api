@@ -1,0 +1,32 @@
+name: Dockerize if tests pass
+
+on:
+  workflow_run:
+    workflows: ["Run NUnit tests"]
+    types:
+      - completed
+
+jobs:
+  dockerize:
+    runs-on: ubuntu-latest
+
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set image tag
+        id: set_image_tag
+        run: echo "::set-output name=tag::$(date +'%Y%m%d')"
+
+      - name: Build docker image
+        run: docker build -t krisztanzero/bike-service-project:bike-service-api-${{ steps.set_image_tag.outputs.tag }} ./BikeServiceAPI
+
+      - name: Push docker image
+        run: docker push krisztanzero/bike-service-project:bike-service-api-${{ steps.set_image_tag.outputs.tag }}
