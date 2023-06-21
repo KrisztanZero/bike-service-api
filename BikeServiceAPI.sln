@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BikeServiceAPI", "BikeServiceAPI.csproj", "{232D051B-7176-4EAF-B305-F745AD20A518}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BikeServiceAPITest", "..\bike-service-api-test\BikeServiceAPITest\BikeServiceAPITest.csproj", "{F3C535AB-DA81-41BC-8088-C590EBAF1F4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{232D051B-7176-4EAF-B305-F745AD20A518}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{232D051B-7176-4EAF-B305-F745AD20A518}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{232D051B-7176-4EAF-B305-F745AD20A518}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3C535AB-DA81-41BC-8088-C590EBAF1F4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3C535AB-DA81-41BC-8088-C590EBAF1F4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3C535AB-DA81-41BC-8088-C590EBAF1F4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3C535AB-DA81-41BC-8088-C590EBAF1F4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
