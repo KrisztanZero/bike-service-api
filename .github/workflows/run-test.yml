@@ -18,4 +18,4 @@ jobs:
         run: nuget restore BikeServiceAPI.sln
 
       - name: Build and run NUnit tests
-        run: dotnet test BikeServiceAPITest.sln --logger "trx;LogFileName=test_results.trx"
+        run: dotnet test BikeServiceAPI.sln --logger "trx;LogFileName=test_results.trx"
