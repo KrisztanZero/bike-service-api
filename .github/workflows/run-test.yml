@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Restore NuGet packages
-        run: nuget restore BikeServiceAPITest.sln
+        run: nuget restore BikeServiceAPI.sln
 
       - name: Build and run NUnit tests
         run: dotnet test BikeServiceAPITest.sln --logger "trx;LogFileName=test_results.trx"
