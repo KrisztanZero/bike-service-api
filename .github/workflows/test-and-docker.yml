@@ -71,7 +71,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Tag docker image
-        run: docker tag krisztanzero/bike-service-project:bike-service-api krisztanzero/bike-service-project:bike-service-api:latest
+        run: docker tag krisztanzero/bike-service-project:bike-service-api bike-service-api:latest
       
       - name: Push docker image
         if: ${{ github.ref == 'refs/heads/main' }}
