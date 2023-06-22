@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint:
+  lint-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,8 +25,8 @@ jobs:
       - name: Run lint test
         run: dotnet build --configuration Release /p:StyleCopEnabled=true
 
-  test:
-    needs: lint
+  nunit-test:
+    needs: lint-test
     runs-on: ubuntu-latest
 
     steps:
@@ -41,7 +41,7 @@ jobs:
           dotnet test BikeServiceAPI.sln --logger "trx;LogFileName=test_results.trx"
 
   build_and_run:
-    needs: test
+    needs: nunit-test
     if: ${{ needs.test.result == 'success' }}
     runs-on: ubuntu-latest
 
@@ -50,10 +50,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build docker image
-        run: docker build -t krisztanzero/bike-service-project:bike-service-api:${{ github.sha }} ./BikeServiceAPI
+        run: docker build -t krisztanzero/bike-service-project:bike-service-api:latest ./BikeServiceAPI
 
       - name: Run Docker container
-        run: docker run -d -p 8080:80 krisztanzero/bike-service-project:bike-service-api:${{ github.sha }}
+        run: docker run -d -p 8080:80 krisztanzero/bike-service-project:bike-service-api:latest
 
   push_to_dockerhub:
     needs: build_and_run
@@ -71,4 +71,4 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Push docker image
-        run: docker push krisztanzero/bike-service-project:bike-service-api:${{ github.sha }}
+        run: docker push krisztanzero/bike-service-project:bike-service-api:latest
