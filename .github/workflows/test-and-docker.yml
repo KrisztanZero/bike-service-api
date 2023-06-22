@@ -48,7 +48,7 @@ jobs:
         run: docker network create bike-service-network
 
   build-and-run:
-    needs: [nunit-test, create-network]
+    needs: [ nunit-test, create-network ]
     if: ${{ needs.nunit-test.result == 'success' }}
     runs-on: ubuntu-latest
 
@@ -67,6 +67,9 @@ jobs:
 
       - name: Run Docker API container
         run: docker run -d --network=bike-service-network --name bike-service-api bike-service-api
+
+      - name: Update database schema
+        run: docker exec bike-service-api dotnet ef database update --project ./BikeServiceAPI/BikeServiceAPI.csproj --context BikeServiceDbContext --verbose
 
   push-to-dockerhub:
     needs: build-and-run
