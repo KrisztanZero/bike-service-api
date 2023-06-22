@@ -40,8 +40,15 @@ jobs:
         run: |
           dotnet test BikeServiceAPI.sln --logger "trx;LogFileName=test_results.trx"
 
+  create-network:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create Docker network
+        run: docker network create bike-service-network
+
   build-and-run:
-    needs: nunit-test
+    needs: [nunit-test, create-network]
     if: ${{ needs.nunit-test.result == 'success' }}
     runs-on: ubuntu-latest
 
@@ -49,11 +56,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Build docker image
+      - name: Build docker DB image
+        run: docker build -t bike-service-db:latest -f Dockerfile-db .
+
+      - name: Run Docker DB container
+        run: docker run -d --network=bike-service-network --name bike-service-db bike-service-db
+
+      - name: Build docker API image
         run: docker build -t bike-service-api:latest ./BikeServiceAPI
 
-      - name: Run Docker container
-        run: docker run -d -p 8080:80 bike-service-api
+      - name: Run Docker API container
+        run: docker run -d --network=bike-service-network --name bike-service-api bike-service-api
 
   push-to-dockerhub:
     needs: build-and-run
@@ -69,7 +82,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
-      - name: Push docker image
+
+      - name: Push API docker image
         if: ${{ github.ref == 'refs/heads/main' }}
         run: docker push krisztanzero/bike-service-project:bike-service-api
+
+      - name: Push DB docker image
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: docker push krisztanzero/bike-service-project:bike-service-db
