@@ -2,9 +2,13 @@
 
 on:
   push:
-    branches: [ "main" ]
+    branches: 
+      - main
+      - development
   pull_request:
-    branches: [ "main" ]
+    branches: 
+      - main
+      - development
   workflow_dispatch:
 
 jobs:
@@ -37,12 +41,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Set image tag
-        id: set_image_tag
-        run: echo "::set-output name=tag::$(date +'%Y%m%d')"
 
       - name: Build docker image
-        run: docker build -t krisztanzero/bike-service-project:bike-service-api-${{ steps.set_image_tag.outputs.tag }} ./BikeServiceAPI
+        run: docker build -t krisztanzero/bike-service-project:bike-service-api ./BikeServiceAPI
 
       - name: Push docker image
-        run: docker push krisztanzero/bike-service-project:bike-service-api-${{ steps.set_image_tag.outputs.tag }}
+        run: docker push krisztanzero/bike-service-project:bike-service-api
+        
+      - name: Run Docker container
+        run: docker run -d -p 8080:80 krisztanzero/bike-service-project:bike-service-api
