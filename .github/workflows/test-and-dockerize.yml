@@ -42,7 +42,7 @@ jobs:
 
   build_and_run:
     needs: nunit-test
-    if: ${{ needs.test.result == 'success' }}
+    if: ${{ needs.nunit-test.result == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
