@@ -23,20 +23,23 @@ builder.Services.AddCors(options =>
         });
 });
 
-string[] connectionNames = { "BikeServiceConnection", "BikeService@Vili" };
-string connectionString = null;
-
-builder.Services.AddDbContext<BikeServiceContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString(connectionNames[1])));
-
-builder.Services.AddDbContext<BikeServiceContext>(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString(connectionNames[0]))
-    );
-
-if (connectionString == null)
+var connectionType = builder.Configuration.GetValue<string>("ConnectionType");
+switch (connectionType)
 {
-    Console.WriteLine("Failed to connect to any database.");
+    case "MSSQL":
+        builder.Services.AddDbContext<BikeServiceContext>(options => 
+            options.UseSqlServer(builder.Configuration.GetConnectionString("BikeServiceConnection")));
+        Console.WriteLine("Application use MSSQL server.");
+        break;
+    case "PostgreSQL":
+        builder.Services.AddDbContext<BikeServiceContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("BikeServiceConnection")));
+        Console.WriteLine("Application use PostgreSQL server");
+        break;
+    default:
+        throw new Exception("Invalid ConnectionType specified in appsettings.json");
 }
+
 // Add services to the container.
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

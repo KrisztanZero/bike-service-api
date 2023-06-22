@@ -64,7 +64,6 @@ public class AccessController : ControllerBase
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal,
                 authProperties);
-            user.Password = "";
             return Ok(new UserDto(user));
         }
 
