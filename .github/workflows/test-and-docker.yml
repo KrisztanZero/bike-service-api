@@ -57,7 +57,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build docker DB image
-        run: docker build -t bike-service-db:latest -f Dockerfile-db .
+        run: docker build -t bike-service-db:latest -f ./database/Dockerfile-db .
 
       - name: Run Docker DB container
         run: docker run -d --network=bike-service-network --name bike-service-db bike-service-db
