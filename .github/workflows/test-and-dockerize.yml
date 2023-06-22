@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - name: Restore NuGet packages
-        run: nuget restore BikeServiceAPI.sln
+        run: nuget restore ../BikeServiceAPI.sln
 
       - name: Build and run NUnit tests
         run: |
