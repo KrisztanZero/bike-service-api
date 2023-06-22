@@ -22,9 +22,6 @@ jobs:
       - name: Restore NuGet packages
         run: nuget restore BikeServiceAPI.sln
 
-      - name: Install StyleCop
-        run: dotnet tool install --global StyleCop.Analyzers
-
       - name: Run lint test
         run: dotnet build --configuration Release /p:StyleCopEnabled=true
 
