@@ -1,8 +1,10 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-FROM mcr.microsoft.com/mssql/server:2019-latest
+﻿FROM mcr.microsoft.com/mssql/server:2019-latest
 
 ENV SA_PASSWORD=BikeServiceProject
 ENV ACCEPT_EULA=Y
 
 COPY ./BikeServiceAPI/Migrations/ ./Migrations/
+
+FROM mcr.microsoft.com/dotnet/runtime:7.0 AS runtime
+
 RUN dotnet ef database update --project ./BikeServiceAPI/BikeServiceAPI.csproj --context BikeServiceDbContext --verbose
