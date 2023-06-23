@@ -13,7 +13,7 @@ on:
 
 jobs:
   build-and-run:
-    needs: nunit-test
+    
     if: ${{ needs.nunit-test.result == 'success' }}
     runs-on: ubuntu-latest
 
