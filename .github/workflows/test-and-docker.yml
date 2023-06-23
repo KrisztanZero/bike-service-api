@@ -40,19 +40,16 @@ jobs:
         run: |
           dotnet test BikeServiceAPI.sln --logger "trx;LogFileName=test_results.trx"
 
-  create-network:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Create Docker network
-        run: docker network create bike-service-network
-
   build-and-run:
-    needs: [ nunit-test, create-network ]
+    needs: nunit-test
     if: ${{ needs.nunit-test.result == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
+      
+      - name: Create Docker network
+        run: docker network create bike-service-network
+          
       - name: Checkout repository
         uses: actions/checkout@v3
 
