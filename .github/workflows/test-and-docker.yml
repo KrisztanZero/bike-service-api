@@ -46,6 +46,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Cleanup Docker resources
+        run: docker system prune -f
       
       - name: Create Docker network
         run: docker network create bike-service-network
